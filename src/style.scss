@@ -1,0 +1,144 @@
+$gameSize: 460px;
+$backgroundColour: black;
+$tlNormal: green;
+$tlHighlight: gray;
+$trNormal: red;
+$tlHighlight: gray;
+$blNormal: yellow;
+$blHighlight: gray;
+$brNormal: blue;
+$brHighlight: gray;
+$controlsColour: white;
+
+#app {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;   
+}
+
+.container {
+    width: $gameSize+60px;
+    height: $gameSize+60px;
+    display: flex;
+    flex-wrap: wrap;
+    position: relative;
+}
+
+.gameBtn {
+    width: $gameSize/2; 
+    height: $gameSize/2;
+    margin: 0px;
+    border-style: solid;
+    border-color: $backgroundColour;
+    z-index: 1;
+}
+
+.topLeft {
+    background-color: $tlNormal;
+    border-radius:100% 0 0 0;
+    border-width: 20px 10px 10px 20px;
+}
+
+
+.topRight {
+    background-color: $trNormal;
+    border-radius: 0 100% 0 0;
+    border-width: 20px 20px 10px 10px;
+}
+
+.bottomRight {
+    background-color: $brNormal;
+    border-radius: 0 0 100% 0;
+    border-width: 10px 20px 20px 10px;
+}
+
+.bottomLeft {
+    background-color: $blNormal;
+    border-radius: 0 0 0 100%;
+    border-width: 10px 10px 20px 20px;
+}
+
+.controls {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background-color: $controlsColour;
+    z-index: 5;
+    top: 50%;
+    left: 50%;
+    margin: -120px 0 0 -120px;
+    border-radius: 100%;
+    border: 20px solid $backgroundColour;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.vert {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.title {
+    font-family: Alfa Slab One, serif;
+    font-size: 48px;
+}
+
+.label {
+    font-family: Roboto, sans-serif;
+    font-size: 12px;
+}
+
+.counter {
+    margin-right: 8px;
+    
+    .icon {
+	width: 60px;
+	height: 40px;
+	border-radius: 10px;
+	background-color: black;
+	color: red;
+	margin-bottom: 5px;
+    }
+}
+
+.start {
+    margin-right: 8px;
+
+    .icon {
+	width: 20px;
+	height: 20px;
+	border-radius: 100%;
+	background-color: red;
+	border: 1px solid black;
+	margin-bottom: 8px;
+    }
+}
+
+.strict {
+    .indicator {
+	width: 6px;
+	height: 6px;
+	background-color: red;
+	border-radius: 100px;
+	border: 1px solid black;
+	margin-bottom: 4px;
+    }
+    
+    .icon {
+	width: 20px;
+	height: 20px;
+	border-radius: 100%;
+	background-color: yellow;
+	border: 1px solid black;
+	margin-bottom: 8px;
+    }
+}
