@@ -1,13 +1,13 @@
 $gameSize: 460px;
 $backgroundColour: black;
-$tlNormal: green;
-$tlHighlight: gray;
-$trNormal: red;
-$tlHighlight: gray;
-$blNormal: yellow;
-$blHighlight: gray;
-$brNormal: blue;
-$brHighlight: gray;
+$tlNormal: #00a74a;
+$tlHighlight: #09ff76;
+$trNormal: #9f0f17;
+$trHighlight: #ff4141;
+$blNormal: #cca707;
+$blHighlight: #f9f747;
+$brNormal: #094a8f;
+$brHighlight: #229aff;
 $controlsColour: white;
 
 #app {
@@ -41,11 +41,22 @@ $controlsColour: white;
     border-width: 20px 10px 10px 20px;
 }
 
+.topLeftHighlight, .topLeft:active {
+    background-color: $tlHighlight;
+}
 
 .topRight {
     background-color: $trNormal;
     border-radius: 0 100% 0 0;
     border-width: 20px 20px 10px 10px;
+}
+
+.topRightHighlight {
+    background-color: $trHighlight;
+}
+
+.topRight:active  {
+    background-color: $trHighlight;
 }
 
 .bottomRight {
@@ -54,10 +65,18 @@ $controlsColour: white;
     border-width: 10px 20px 20px 10px;
 }
 
+.bottomRightHighlight, .bottomRight:active {
+    background-color: $brHighlight;
+}
+
 .bottomLeft {
     background-color: $blNormal;
     border-radius: 0 0 0 100%;
     border-width: 10px 10px 20px 20px;
+}
+
+.bottomLeftHighlight, .bottomLeft:active {
+    background-color: $blHighlight;
 }
 
 .controls {
@@ -141,4 +160,8 @@ $controlsColour: white;
 	border: 1px solid black;
 	margin-bottom: 8px;
     }
+}
+
+.disableClicks {
+      pointer-events: none;
 }
