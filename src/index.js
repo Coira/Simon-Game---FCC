@@ -4,19 +4,23 @@ import classnames from 'classnames';
 
 import './style.scss';
 import GameButton from './GameButton';
+import CountDisplay from './CountDisplay';
 
 class App extends React.Component {
     constructor(props) {
 	super(props);
 
-	this.state = {
-	    disableClicks: true,
-	    switchedOn: true
-	};
-	this.sequenceCount = 0;
 	this.sequence = [];
 	this.anim = null;
 	this.pIndex = 0;
+	
+	this.state = {
+	    disableClicks: true,
+	    switchedOn: true,
+	    sequenceCount: 0
+	};
+
+	this.startGame = this.startGame.bind(this);
     }
 
     turnOnGame() {
@@ -27,15 +31,29 @@ class App extends React.Component {
 	// click handler for start button
 
 	if (this.state.switchedOn) {
-	    this.sequenceCount = 0;
+	    if (this.anim !== null) {
+		for (var i = 0; i < 4; i++) {
+		    this.refs[i].unhighlight();
+		}
+		
+		clearInterval(this.anim);
+		this.anim = null;
+	    }
+	    this.pIndex = 0;
 	    this.sequence = [];
-	    this.compTurn();
+	    this.setState({sequenceCount: 0},
+			  function() {
+			      flashCounter(this.compTurn);
+			  });
 	}
     }
 
+    flashCounter(callback) {
+	this.refs["disp"].flash();
+	setTimeout(this.callback.bind(this), 1800);
+    }
+    
     compTurn() {
-	console.log("comp turn");
-
 	this.createSequence();
 	this.displaySequence();
 	this.playerTurn();
@@ -48,13 +66,13 @@ class App extends React.Component {
     }
     
     createSequence() {
-	this.sequenceCount++;
 	this.sequence.push(Math.floor(Math.random() * 4));
-	//this.sequence.push(0);
+	this.setState({sequenceCount: this.state.sequenceCount+1});
+	console.log(this.sequence);
     }
 
     displaySequence() {
-	console.log(this.sequence);
+//	console.log(this.state.sequenceCount);
 
 	if (this.anim === null && this.sequence.length > 0) {
 	    let animStart = 0;
@@ -86,18 +104,19 @@ class App extends React.Component {
 
     
     gameBtnClicked(ref) {
-	console.log(ref);
 	if (ref === this.sequence[this.pIndex]) {
-	    console.log("correct");
+	    // player enters correct button
+	    this.pIndex++;
+	    if (this.pIndex === this.sequence.length) {
+		this.compTurn();
+	    }
 	}
 	else {
-	    console.log("incorrect");
+	    // player enters incorrect button
+	    this.pIndex = 0;
+	    this.displaySequence();
 	}
 
-	this.pIndex++;
-	if (this.pIndex === this.sequence.length) {
-	    this.compTurn();
-	}
 	
     }
     
@@ -110,13 +129,13 @@ class App extends React.Component {
 		    <div className="vert controls">
 			<div className="title">Simon</div>
 			<div className="row buttons">
-			    <div className="vert counter">
-				<div className="icon">--</div>
-				<div className="label">COUNT</div>
-			    </div>
 			    
+			    <CountDisplay
+				count={this.state.sequenceCount}
+				ref="disp"
+			    />
 			    <div className="vert start">
-				<div onClick={this.startGame.bind(this)}
+				<div onClick={this.startGame}
 				     className="icon"></div>
 				<div className="label">START</div>
 			    </div>
