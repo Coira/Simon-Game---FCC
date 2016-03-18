@@ -10,10 +10,12 @@ class App extends React.Component {
     constructor(props) {
 	super(props);
 
+	this.maxSteps = 20; // how many steps for a win?
+	
 	this.sequence = [];
-	this.anim = null;
-	this.pIndex = 0;
-	this.switchedOn = true;
+	this.anim = null;  // animation for flashing game buttons
+	this.pIndex = 0;   // how many steps the player has entered correctly
+	this.switchedOn = true;  // can only start game when true
 
 	this.sounds = [
 	    new Audio("https://dl.dropboxusercontent.com/u/10922351/sounds/simon/simonSound1.mp3"),
@@ -76,10 +78,11 @@ class App extends React.Component {
     }
     
     compTurn() {
-	if (this.sequence.length === 3) {
+	// player has completed the sequence
+	if (this.sequence.length === this.maxSteps) {
 	    this.flashCounter("**");
 	}
-	else {
+	else {  // add another step
 	    this.createSequence();
 	    this.displaySequence();
 	    this.playerTurn();
@@ -91,7 +94,7 @@ class App extends React.Component {
 	// now wait for player to enter sequence
     }
 
-    // creates a random sequence of button presses
+    // adds a random button press to the sequence
     createSequence() {
 	this.sequence.push(Math.floor(Math.random() * 4));
 	this.setState({counterMsg: this.sequence.length});
@@ -130,7 +133,7 @@ class App extends React.Component {
 	}
     }
 
-    
+    // player's clicked a game button -- is it the correct one?
     gameBtnClicked(btnId) {
 	this.sounds[btnId].play();
 	if (btnId === this.sequence[this.pIndex]) {
@@ -151,7 +154,7 @@ class App extends React.Component {
 			this.displaySequence();
 		    });
 	    }
-	    else {
+	    else {  // we're in strict mode, restart game
 		this.flashCounter("!!", this.startGame);
 	    }
 	}
@@ -159,7 +162,6 @@ class App extends React.Component {
     }
 
     playSound(index) {
-	console.log("play");
 	this.sounds[index].play;
     }
     
