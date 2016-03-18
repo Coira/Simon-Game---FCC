@@ -13,24 +13,41 @@ class App extends React.Component {
 	this.sequence = [];
 	this.anim = null;
 	this.pIndex = 0;
+	this.switchedOn = true;
+
+	this.sounds = [
+	    new Audio("https://dl.dropboxusercontent.com/u/10922351/sounds/simon/simonSound1.mp3"),
+	    new Audio("https://dl.dropboxusercontent.com/u/10922351/sounds/simon/simonSound2.mp3"),
+	    new Audio("https://dl.dropboxusercontent.com/u/10922351/sounds/simon/simonSound3.mp3"),
+	    new Audio("https://dl.dropboxusercontent.com/u/10922351/sounds/simon/simonSound4.mp3")
+	];
 	
 	this.state = {
 	    disableClicks: true,
-	    switchedOn: true,
-	    sequenceCount: 0
+	    counterMsg: "--",
+	    strict: false
 	};
 
 	this.startGame = this.startGame.bind(this);
+	this.onOffSwitch = this.onOffSwitch.bind(this);
+	this.toggleStrict = this.toggleStrict.bind(this);
     }
 
-    turnOnGame() {
-	// click handler for switch button
+    // I took out this switch. It's not in the user stories, and makes the game worse.
+    onOffSwitch() {
+	    // click handler for switch button
+	    this.switchedOn = !this.switchedOn;
     }
-    
+
+    toggleStrict() {
+	this.setState({strict: !this.state.strict});
+    }
+
+    // initialise and start the game
     startGame() {
 	// click handler for start button
 
-	if (this.state.switchedOn) {
+	if (this.switchedOn) {
 	    if (this.anim !== null) {
 		for (var i = 0; i < 4; i++) {
 		    this.refs[i].unhighlight();
@@ -40,40 +57,50 @@ class App extends React.Component {
 		this.anim = null;
 	    }
 	    this.pIndex = 0;
-	    this.sequence = [];
-	    this.setState({sequenceCount: 0},
-			  function() {
-			      flashCounter(this.compTurn);
-			  });
+	    this.sequence = [];	    
+
+	    this.flashCounter("--", this.compTurn);
 	}
     }
 
-    flashCounter(callback) {
-	this.refs["disp"].flash();
-	setTimeout(this.callback.bind(this), 1800);
+    // flashes the display counter then calls the next function
+    flashCounter(msg, callback) {
+	this.setState({counterMsg: msg},
+		      () => {
+			  this.refs["disp"].flash();
+		      });
+	if (callback) {
+	    setTimeout(callback.bind(this), 1800);
+	}
+	// help! I'm stuck in callback hell!
     }
     
     compTurn() {
-	this.createSequence();
-	this.displaySequence();
-	this.playerTurn();
+	if (this.sequence.length === 3) {
+	    this.flashCounter("**");
+	}
+	else {
+	    this.createSequence();
+	    this.displaySequence();
+	    this.playerTurn();
+	}
     }
 
     playerTurn() {
-
 	this.pIndex = 0;
 	// now wait for player to enter sequence
     }
-    
+
+    // creates a random sequence of button presses
     createSequence() {
 	this.sequence.push(Math.floor(Math.random() * 4));
-	this.setState({sequenceCount: this.state.sequenceCount+1});
+	this.setState({counterMsg: this.sequence.length});
 	console.log(this.sequence);
     }
 
+    // flashes the game buttons in sequence
     displaySequence() {
-//	console.log(this.state.sequenceCount);
-
+	
 	if (this.anim === null && this.sequence.length > 0) {
 	    let animStart = 0;
 	    let index = 0;
@@ -81,11 +108,12 @@ class App extends React.Component {
 	    this.setState({disableClicks: true});
 
 	    this.anim = setInterval(function() {
-		animStart += 100;
+		animStart += 25;
 		if (animStart === 500) {
 		    this.refs[ref].highlight();
+		    this.sounds[ref].play();
 		}
-		else if (animStart >= 1100) {
+		else if (animStart >= 1000) {
 		    this.refs[ref].unhighlight();
 		    index++;
 		    ref = this.sequence[index];
@@ -98,13 +126,14 @@ class App extends React.Component {
 			this.setState({disableClicks: false});
 		    }
 		}
-	    }.bind(this), 100);
+	    }.bind(this), 25);
 	}
     }
 
     
-    gameBtnClicked(ref) {
-	if (ref === this.sequence[this.pIndex]) {
+    gameBtnClicked(btnId) {
+	this.sounds[btnId].play();
+	if (btnId === this.sequence[this.pIndex]) {
 	    // player enters correct button
 	    this.pIndex++;
 	    if (this.pIndex === this.sequence.length) {
@@ -114,14 +143,27 @@ class App extends React.Component {
 	else {
 	    // player enters incorrect button
 	    this.pIndex = 0;
-	    this.displaySequence();
+
+	    if (!this.state.strict) {
+		this.flashCounter("!!", () =>
+		    {
+			this.setState({counterMsg:this.sequence.length});
+			this.displaySequence();
+		    });
+	    }
+	    else {
+		this.flashCounter("!!", this.startGame);
+	    }
 	}
 
-	
+    }
+
+    playSound(index) {
+	console.log("play");
+	this.sounds[index].play;
     }
     
-    
-
+	    
     render() {
 	return (
 	    <div>
@@ -131,7 +173,7 @@ class App extends React.Component {
 			<div className="row buttons">
 			    
 			    <CountDisplay
-				count={this.state.sequenceCount}
+				msg={this.state.counterMsg}
 				ref="disp"
 			    />
 			    <div className="vert start">
@@ -140,17 +182,13 @@ class App extends React.Component {
 				<div className="label">START</div>
 			    </div>
 
-			    <div className="vert strict">
-				<div className="indicator"></div>
+			    <div className="vert strict" onClick={this.toggleStrict}>
+				<div className={classnames("indicator",
+							   {on: this.state.strict})}>
+				</div>
 				<div className="icon"></div>
 				<div className="label">STRICT</div>
 			    </div>
-			</div>
-			
-			<div className="row switchOn">
-			    <div className="label">OFF</div>
-			    <div className="switch"></div>
-			    <div className="label">ON</div>
 			</div>
 		    </div>
 		    

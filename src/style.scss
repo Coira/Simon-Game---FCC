@@ -128,8 +128,8 @@ $controlsColour: white;
 	border-radius: 10px;
 	background-color: black;
 	color: red;
-	font-size: 30px;
-	margin-bottom: 5px;
+	font-size: 28px;
+	/*margin-bottom: 5px;*/
     }
 
     .hidden {
@@ -155,11 +155,16 @@ $controlsColour: white;
     .indicator {
 	width: 6px;
 	height: 6px;
-	background-color: red;
+	background-color: black;
 	border-radius: 100px;
 	border: 1px solid black;
 	margin-bottom: 4px;
     }
+
+    .on {
+	background-color: red;
+    }
+    
     
     .icon {
 	width: 20px;

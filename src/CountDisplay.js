@@ -22,6 +22,7 @@ class CountDisplay extends React.Component {
 	    }
 	    if (repeat >= 2) {
 		clearInterval(anim);
+		this.setState({display: this.props.count});
 	    }
 	}.bind(this), 300);
     }
@@ -31,7 +32,8 @@ class CountDisplay extends React.Component {
 	    <div className=
 		 {classnames("dispIcon",
 			     {hidden: this.state.hidden})}>
-		{this.props.count === 0 ? "--" : this.props.count}</div>
+		{this.props.msg}
+	    </div>
 	    <div className="label">COUNT</div>
 	</div>);
 	

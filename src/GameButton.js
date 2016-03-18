@@ -29,7 +29,8 @@ class GameButton extends React.Component {
 				 cn,
 				 {[cnLit]: this.state.lit},
 				 {"disableClicks":this.props.disableClicks})}
-		     onClick={this.props.clicked}>
+		     onMouseDown={this.props.clicked}
+		     >
 	    </div>
 	);
     }
